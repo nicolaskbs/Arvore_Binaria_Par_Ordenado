@@ -42,7 +42,7 @@ void BST::insert(std::pair<unsigned int, unsigned int> data) {
     if(this->pointer_to_root == nullptr){
         this->pointer_to_root = new Node(key, data, nullptr);
     } else{
-        insert_private(this->pointer_to_root->key, data, this->pointer_to_root, nullptr);
+        insert_private(key, data, this->pointer_to_root, nullptr);
     }    
 }
 
@@ -79,29 +79,46 @@ void BST::deleteNode(std::pair<unsigned int, unsigned int> data){
     delete_private(key, this->pointer_to_root);
 }
 
-void BST::delete_private(unsigned int key, Node* current_node){
-    if(current_node == nullptr){
+void BST::delete_private(unsigned int key, Node* current_node) {
+    if (current_node == nullptr) {
         return;
     }
-    if(current_node->key < key){
-        delete_private(key, current_node->right_child);
-    } else if(current_node->key > key){
+
+    if (key < current_node->key) {
         delete_private(key, current_node->left_child);
+    } else if (key > current_node->key) {
+        delete_private(key, current_node->right_child);
     } else {
-        if(current_node->left_child == nullptr 
-            && current_node->right_child == nullptr){
-            if(current_node->parent == nullptr){
-            } else if(current_node->parent->left_child == current_node){
-                current_node->parent->right_child = nullptr;
+        if (current_node->left_child == nullptr && current_node->right_child == nullptr) {
+            if (current_node->parent == nullptr) {
+                pointer_to_root = nullptr;
+            } else if (current_node->parent->left_child == current_node) {
+                current_node->parent->left_child = nullptr;
             } else {
                 current_node->parent->right_child = nullptr;
             }
             delete current_node;
-        } else {
-            Node* leaf = find_leaf(key, current_node);
-            current_node->data = leaf->data;
-            current_node->key = leaf->key;
-            delete_private(leaf->key, leaf);
+        }
+        else if (current_node->left_child != nullptr && current_node->right_child != nullptr) {
+            Node* successor = find_leaf(key, current_node);
+            current_node->key = successor->key;
+            current_node->data = successor->data;
+            delete_private(successor->key, successor);
+        }
+        else {
+            Node* child = (current_node->left_child != nullptr) ? current_node->left_child : current_node->right_child;
+            if (current_node->parent == nullptr) {
+                pointer_to_root = child;
+                child->parent = nullptr;
+            } else {
+                if (current_node->parent->left_child == current_node) {
+                    current_node->parent->left_child = child;
+                } else {
+                    current_node->parent->right_child = child;
+                }
+                child->parent = current_node->parent;
+            }
+            delete current_node;
         }
     }
 }
@@ -132,7 +149,8 @@ Node* BST::search_private(unsigned int key, Node* current_node){
     }
     if(current_node->key == key){
         return current_node;
-    } else if(current_node->key < key){
+    }
+    if(current_node->key < key){
         return search_private(key, current_node->right_child);
     }
     return search_private(key, current_node->left_child);
