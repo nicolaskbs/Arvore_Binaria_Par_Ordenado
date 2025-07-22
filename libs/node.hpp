@@ -21,5 +21,5 @@ public:
         key(k), data(d), parent(p) {}
  
     // --- Função que gera chaves para os pares ordenados
-    static int createKey(std::pair<unsigned int, unsigned int> pair);
+    static unsigned int createKey(std::pair<unsigned int, unsigned int> pair);
 };
