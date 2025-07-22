@@ -20,7 +20,7 @@ private:
 
     void delete_private(unsigned int key, Node* current_node);
 
-    Node* find_leaf(unsigned int key, Node* current_node);
+    Node* find_leaf(Node* current_node);
 
     Node* search_private(unsigned int key, Node* current_node);
 

@@ -100,7 +100,7 @@ void BST::delete_private(unsigned int key, Node* current_node) {
             delete current_node;
         }
         else if (current_node->left_child != nullptr && current_node->right_child != nullptr) {
-            Node* successor = find_leaf(key, current_node);
+            Node* successor = find_leaf(current_node);
             current_node->key = successor->key;
             current_node->data = successor->data;
             delete_private(successor->key, successor);
@@ -123,7 +123,7 @@ void BST::delete_private(unsigned int key, Node* current_node) {
     }
 }
 
-Node* BST::find_leaf(unsigned int key, Node* current_node){
+Node* BST::find_leaf(Node* current_node){
     if(current_node->left_child != nullptr){
         current_node = current_node->left_child;
         while(current_node->right_child){
